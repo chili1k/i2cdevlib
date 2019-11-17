@@ -67,16 +67,16 @@ THE SOFTWARE.
         typedef uint16_t prog_uint16_t;
         typedef int32_t prog_int32_t;
         typedef uint32_t prog_uint32_t;
-        
+
         #define strcpy_P(dest, src) strcpy((dest), (src))
         #define strcat_P(dest, src) strcat((dest), (src))
         #define strcmp_P(a, b) strcmp((a), (b))
-        
+
         #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
         #define pgm_read_word(addr) (*(const unsigned short *)(addr))
         #define pgm_read_dword(addr) (*(const unsigned long *)(addr))
         #define pgm_read_float(addr) (*(const float *)(addr))
-        
+
         #define pgm_read_byte_near(addr) pgm_read_byte(addr)
         #define pgm_read_word_near(addr) pgm_read_word(addr)
         #define pgm_read_dword_near(addr) pgm_read_dword(addr)
@@ -268,7 +268,7 @@ const unsigned char dmpMemory[MPU6050_DMP_CODE_SIZE] PROGMEM = {
 
 };
 
-#ifndef MPU6050_DMP_FIFO_RATE_DIVISOR 
+#ifndef MPU6050_DMP_FIFO_RATE_DIVISOR
 #define MPU6050_DMP_FIFO_RATE_DIVISOR 0x01 // The New instance of the Firmware has this as the default
 #endif
 
@@ -519,7 +519,7 @@ uint8_t MPU6050::dmpGetGravity(int16_t *data, const uint8_t* packet) {
     data[0] = ((int32_t)qI[1] * qI[3] - (int32_t)qI[0] * qI[2]) / 16384;
     data[1] = ((int32_t)qI[0] * qI[1] + (int32_t)qI[2] * qI[3]) / 16384;
     data[2] = ((int32_t)qI[0] * qI[0] - (int32_t)qI[1] * qI[1]
-	       - (int32_t)qI[2] * qI[2] + (int32_t)qI[3] * qI[3]) / (2 * 16384);
+	       - (int32_t)qI[2] * qI[2] + (int32_t)qI[3] * qI[3]) / (2 * 16384UL);
     return status;
 }
 
@@ -551,7 +551,7 @@ uint8_t MPU6050::dmpGetYawPitchRoll(float *data, Quaternion *q, VectorFloat *gra
     data[2] = atan(gravity -> y / sqrt(gravity -> x*gravity -> x + gravity -> z*gravity -> z));
     return 0;
 }
-#else 
+#else
 uint8_t MPU6050::dmpGetYawPitchRoll(float *data, Quaternion *q, VectorFloat *gravity) {
     // yaw: (about Z axis)
     data[0] = atan2(2*q -> x*q -> y - 2*q -> w*q -> z, 2*q -> w*q -> w + 2*q -> x*q -> x - 1);
@@ -561,8 +561,8 @@ uint8_t MPU6050::dmpGetYawPitchRoll(float *data, Quaternion *q, VectorFloat *gra
     data[2] = atan2(gravity -> y , gravity -> z);
     if (gravity -> z < 0) {
         if(data[1] > 0) {
-            data[1] = PI - data[1]; 
-        } else { 
+            data[1] = PI - data[1];
+        } else {
             data[1] = -PI - data[1];
         }
     }
@@ -592,7 +592,7 @@ uint8_t MPU6050::dmpReadAndProcessFIFOPacket(uint8_t numPackets, uint8_t *proces
 
         // process packet
         if ((status = dmpProcessFIFOPacket(buf)) > 0) return status;
-        
+
         // increment external process count variable, if supplied
         if (processed != 0) (*processed)++;
     }
